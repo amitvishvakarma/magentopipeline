@@ -1,4 +1,0 @@
-197,0,0,admin_login,"2024-04-05 06:10:42",login,"{""general"":null,""additional"":{""ip_v6"":""::1""}}",success,admin,1,adminhtml_auth_login,,0.0.0.0
-198,0,0,admin_login,"2024-04-05 07:06:22",login,"{""general"":null,""additional"":{""ip_v6"":""::1""}}",success,admin,1,adminhtml_noroute_index,,0.0.0.0
-199,0,0,adminhtml_system_config,"2024-04-05 07:06:33",view,"{""general"":""developer_configuration"",""additional"":{""ip_v6"":""::1""}}",success,admin,1,adminhtml_system_config_index,,0.0.0.0
-200,0,0,adminhtml_system_config,"2024-04-05 07:06:39",view,"{""general"":""catalog"",""additional"":{""ip_v6"":""::1""}}",success,admin,1,adminhtml_system_config_edit,,0.0.0.0
