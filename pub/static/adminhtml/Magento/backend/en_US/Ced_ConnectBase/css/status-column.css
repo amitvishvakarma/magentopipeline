@@ -1,0 +1,61 @@
+.marketplace-product-deactivated {
+    background: #CFD8DC none repeat scroll 0 0;
+    border: 1px solid #263238;
+    color: #263238;
+    display: block;
+    font-weight: bold;
+    line-height: 17px;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.marketplace-product-not-uploaded {
+    background: #B3E5FC none repeat scroll 0 0;
+    border: 1px solid #01579B;
+    color: #01579B;
+    display: block;
+    font-weight: bold;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.marketplace-product-live {
+    background: #C8E6C9 none repeat scroll 0 0;
+    border: 1px solid #1B5E20;
+    color: #1B5E20;
+    display: block;
+    font-weight: bold;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.marketplace-product-failed {
+    background: #FFCDD2 none repeat scroll 0 0;
+    border: 1px solid #B71C1C;
+    color: #B71C1C;
+    display: block;
+    font-weight: bold;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.marketplace-product-in-progress {
+    background: #E1BEE7 none repeat scroll 0 0;
+    border: 1px solid #4A148C;
+    color: #4A148C;
+    display: block;
+    font-weight: bold;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.marketplace-product-ready-to-upload {
+    background: #FFF9C4 none repeat scroll 0 0;
+    border: 1px solid #F57F17;
+    color: #F57F17;
+    display: block;
+    font-weight: bold;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+}

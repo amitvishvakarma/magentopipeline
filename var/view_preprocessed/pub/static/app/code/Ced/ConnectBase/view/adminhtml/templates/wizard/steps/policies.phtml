@@ -1,0 +1,13 @@
+<?php /* @var $block \Ced\ConnectBase\Block\Adminhtml\Wizard\Steps\DefaultPolicies */ ?> <div class="select-attributes-block" data-role="select-attributes-step"><div class="page-actions-buttons" data-type="skipKO"><div style="margin-right: 3px;"><?= /* @noEscape */ $block->getFetchOnboardingDataButton() ?></div><div><?= /* @noEscape */ $block->getAddNewPolicyButton() ?></div></div></div><?= $block->getChildHtml() ?> <script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "<?= /* @noEscape */  $block->getComponentName() ?>": {
+                        "component": "Ced_ConnectBase/js/wizard/steps/default_policies",
+                        "appendTo": "<?= /* @noEscape */  $block->getParentComponentName() ?>"
+                    }
+                }
+            }
+        }
+    }</script>

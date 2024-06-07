@@ -1,0 +1,136 @@
+<?php /** * CedCommerce * * NOTICE OF LICENSE * * This source file is subject to the End User License Agreement (EULA) * that is bundled with this package in the file LICENSE.txt. * It is also available through the world-wide-web at this URL: * https://cedcommerce.com/license-agreement.txt * * @category Ced * @package Ced_ConnectBase * @author CedCommerce Core Team <connect@cedcommerce.com> * @copyright Copyright CedCommerce (https://cedcommerce.com/) * @license https://cedcommerce.com/license-agreement.txt */ use Ced\ConnectBase\Block\Adminhtml\Listing\Template\Assign; /** @var Assign $block */ $allProducts = $block->getAllProductIds(); $totalBatches = 0; $successImg = $block->getViewFileUrl('Ced_ConnectBase::images/fam_bullet_success.svg'); $errorImg = $block->getViewFileUrl('Ced_ConnectBase::images/fam_bullet_error.svg'); $loaderImg = $block->getViewFileUrl('Ced_ConnectBase::images/rule-ajax-loader.gif'); $noData = $block->getViewFileUrl('Ced_ConnectBase::images/no_data.gif'); $batch2 = []; ?> <div class="row"><div class="col-md-12" style="margin-top: 10px;"><div class="panel panel-default"><div class="block-content panel-body "><div id="connectbase-progress-bar"></div><br> <div id="batches"><div class="batches-content" data-role="content"><ul id="templates-row"><?php $totalBatches = $totalBatches + count($allProducts);?> <?php foreach ($allProducts as $templateId => $data) { ?> <li id="template-name-<?= /* @noEscape */ $templateId?>" class="template-name"><span>Template:</span> <span id="name"><b><?= /* @noEscape */ $data['template_name']; ?></b></span></li> <?php $batch2[] = "template-batch-" . $templateId?> <li id="template-batch-<?= /* @noEscape */ $templateId?>" class="template-batch" data-template-id="<?= /* @noEscape */ $templateId?>" data-batch-type="template" data-batch-index="<?= /* @noEscape */ $templateId?>" style="list-style: none; margin-left: 10px"><img id="status-image-<?= /* @noEscape */ $templateId?>-<?= /* @noEscape */ $templateId?>" src="<?= /* @noEscape */ $loaderImg ?>" alt=""><span id="status-message-<?= /* @noEscape */ $templateId?>-<?= /* @noEscape */ $templateId?>"> Validating template...</span></li> <li id="template-products-<?= /* @noEscape */ $templateId?>" class="template-products" data-template-id="<?= /* @noEscape */ $templateId?>"></li> <?php } ?> <?php if (empty($allProducts)) { ?> <li style="list-style: none; padding: 1.5rem"><img id="status-image-no-data" style="max-width: 5%" src="<?= /* @noEscape */ $noData ?>" alt=""><span style="font-size: 1.6rem"><?= /* @noEscape */ _('No templates found for processing'); ?></span></li> <?php } ?> <input id="total-batches" type="hidden" value="<?= /* @noEscape */ $totalBatches;?>"/></ul></div></div></div></div></div></div><script>
+    require([
+            'jquery',
+            'jquery/ui',
+            'accordion',
+            'lineProgressbar'
+        ],
+        function ($) {
+
+            
+            let productsListSelector = $(".template-products");
+            let currentBatch = 1;
+            let totalBatches = parseInt($('#total-batches').val());
+            let batches = [];
+
+            if (totalBatches > 0) {
+                let progressBarSelector = $("#connectbase-progress-bar");
+                progressBarSelector.LineProgressbar({
+                    percentage: 0,
+                    fillBackgroundColor: '#77a21b',
+                    height: '25px',
+                    progressBarWidth: 0
+                });
+                batches = <?= /* @noEscape */ json_encode($batch2); ?>;
+
+                processRequest(currentBatch, totalBatches);
+            }
+
+            function processRequest(currentBatch, totalBatches) {
+                console.log('currentBatch', currentBatch);
+                console.log('totalBatches', totalBatches);
+                if (batches.length > 0) {
+                    let batchElement = $('#' + batches[0]);
+                    let progressBarSelector = $("#connectbase-progress-bar");
+                    let templateId = $(batchElement).data('template-id');
+                    let productIds = $(batchElement).data('product-ids');
+                    let batchIndex = $(batchElement).data('batch-index');
+                    let batchType = $(batchElement).data('batch-type');
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= /* @noEscape */$block->getAjaxUrl();?>",
+                        data: {
+                            type: batchType,
+                            template_id: templateId,
+                            product_ids: productIds,
+                            form_key: window.FORM_KEY
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            $("#status-message-" + templateId + "-" + batchIndex).text(response.message);
+                            if (response.success === true) {
+                                $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $successImg ?>');
+                            } else if (response.success === false) {
+                                $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                            } else {
+                                $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                                $("#status-message-" + templateId + "-" + batchIndex).text('Something went wrong')
+                            }
+                        },
+                        error: function () {
+                            $("#status-message-" + templateId + "-" + batchIndex).text('Something went wrong');
+                            $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                        },
+                        complete: function () {
+                            console.log('complete');
+                            $.ajax({
+                                type: "POST",
+                                url: "<?= /* @noEscape */$block->getAjaxUrl();?>",
+                                data: {
+                                    type: 'prepare_html',
+                                    template_id: templateId,
+                                    loader_image: '<?= /* @noEscape */ $loaderImg; ?>',
+                                    form_key: window.FORM_KEY
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    $('#template-products-'+templateId).append(response)
+                                    processProductsBatches(templateId)
+                                }
+                            });
+
+                            progressBarSelector.LineProgressbar({
+                                percentage: parseInt((currentBatch / totalBatches) * 100),
+                                fillBackgroundColor: '#77a21b',
+                                height: '35px',
+                                progressBarWidth: parseInt((currentBatch / totalBatches) * 100)
+                            });
+                            currentBatch = currentBatch + 1;
+                            batches.splice($.inArray(batches[0], batches), 1);
+                            processRequest(currentBatch, totalBatches);
+                        }
+                    });
+                }
+            }
+
+            function processProductsBatches(templateId) {
+                $(this).data()
+                let productsBatchElements = $('#products-row-'+templateId).children('[class = "product-batch"][data-ajax-completed=0]');
+
+                if (productsBatchElements.length > 0) {
+                    let batchIndex = $(productsBatchElements[0]).data('batch-index');
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= /* @noEscape */$block->getAjaxUrl();?>",
+                        data: {
+                            type: 'product',
+                            template_id: templateId,
+                            product_ids: $(productsBatchElements[0]).data('product-ids'),
+                            form_key: window.FORM_KEY
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            $("#status-message-" + templateId + "-" + batchIndex).text(response.message)
+                            if (response.success === true) {
+                                $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $successImg ?>');
+                            } else if (response.success === false) {
+                                $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                            } else {
+                                $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                                $("#status-message-" + templateId + "-" + batchIndex).text('Something went wrong')
+                            }
+                        },
+                        error: function () {
+                            $("#status-message-" + templateId + "-" + batchIndex).text('Something went wrong')
+                            $("#status-image-" + templateId + "-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                        },
+                        complete: function () {
+                            $(productsBatchElements[0]).attr('data-ajax-completed', 1);
+                            processProductsBatches(templateId);
+                        }
+                    });
+                }
+            }
+
+        }
+    );</script><style> #batches { border: 1px solid #ddd; border-radius: 0; } .batches-tab { background: #eee; padding: 1rem; cursor: pointer; font-weight: bold; & :first-child { border-bottom: 1px solid #ddd; } & :nth-last-child(2) { border-top: 1px solid #ddd; } } .batches-content { padding: 0.5rem 0.5rem; } /*li*/ #batches ul { list-style: none; padding: 0; margin: 0; } #batches ul li { vertical-align: middle; padding: 2px 2px 2px 2px; font: normal 12px sans-serif; font-size: 1.5rem; } #batches li img { vertical-align: middle; margin-right: 5px; max-width: 1.5rem; } #batches span { vertical-align: middle; }</style>

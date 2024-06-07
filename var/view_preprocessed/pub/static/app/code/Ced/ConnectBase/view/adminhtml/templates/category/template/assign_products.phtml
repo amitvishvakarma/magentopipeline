@@ -1,0 +1,9 @@
+<?php /** @var \Ced\ConnectBase\Block\Adminhtml\Category\Template\AssignProducts $block */ /** @var \Ced\ConnectBase\Block\Adminhtml\Category\Template\Tab\Product $blockGrid */ /** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */ $blockGrid = $block->getBlockGrid(); $gridJsObjectName = $blockGrid->getJsObjectName(); ?> <?= $block->getGridHtml() ?> <input type="hidden" name="category_products" id="in_category_products" data-form-part="template_form" value="" /><script type="text/x-magento-init">
+    {
+        "*": {
+            "Ced_ConnectBase/js/category/template/assign-products": {
+                "selectedProducts": <?= /* @noEscape */ $block->getProductsJson() ?>,
+                "gridJsObjectName": <?= /* @noEscape */ '"' . $gridJsObjectName . '"' ?: '{}' ?>
+            }
+        }
+    }</script><!-- @todo remove when "UI components" will support such initialization --><?= /* @noEscape */ $secureRenderer->renderTag( 'script', [], "require('mage/apply/main').apply();", false ) ?>

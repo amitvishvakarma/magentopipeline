@@ -1,0 +1,74 @@
+<?php /** * CedCommerce * * NOTICE OF LICENSE * * This source file is subject to the End User License Agreement (EULA) * that is bundled with this package in the file LICENSE.txt. * It is also available through the world-wide-web at this URL: * https://cedcommerce.com/license-agreement.txt * * @category Ced * @package Ced_ConnectBase * @author CedCommerce Core Team <connect@cedcommerce.com> * @copyright Copyright CedCommerce (https://cedcommerce.com/) * @license https://cedcommerce.com/license-agreement.txt */ $allProducts = $block->getAllProductIds(); $totalBatches = 0; $successImg = $block->getViewFileUrl('Ced_ConnectBase::images/fam_bullet_success.svg'); $errorImg = $block->getViewFileUrl('Ced_ConnectBase::images/fam_bullet_error.svg'); $loaderImg = $block->getViewFileUrl('Ced_ConnectBase::images/rule-ajax-loader.gif'); $noData = $block->getViewFileUrl('Ced_ConnectBase::images/no_data.gif'); $batch2 = []; ?> <div class="row"><div class="col-md-12" style="margin-top: 10px;"><div class="panel panel-default"><div class="block-content panel-body "><div id="connectbase-progress-bar"></div><br> <div id="batches"><div class="batches-content" data-role="content"><?php $totalBatches = $totalBatches + count($allProducts);?> <ul id="products-row" style="list-style: none;" data-total-batches="<?= /* @noEscape */ count($allProducts); ?>"><?php if (count($allProducts) > 0) { ?> <li style="list-style: none; margin-left: 10px"><?= /* @noEscape */ 'Total ' . count($allProducts) . ' Batch(s) Found.'; ?></li> <?php foreach ($allProducts as $index => $productsBatch) { ?> <?php $batch2[] = "product-batch-" . $index?> <li class="product-batch" style="list-style: none; margin-left: 10px" id="product-batch-<?= /* @noEscape */ $index ?>" data-ajax-completed="0" data-batch-type="<?= /* @noEscape */ $block->getBatchType(); ?>" data-batch-index="<?= /* @noEscape */ $index?>" data-product-ids='<?= /* @noEscape */ json_encode($productsBatch)?>'><img id="status-image-<?= /* @noEscape */ $index ?>" src="<?= /* @noEscape */ $loaderImg ?>"><span id="status-message-<?= /* @noEscape */ $index ?>" class="text"><?= /* @noEscape */ __("Updating..."); ?></span></li> <?php } ?> <?php } else { ?> <li style="list-style: none; margin-left: 10px"><?= /* @noEscape */ 'No batches found for processing'; ?></li> <?php } ?> <li id="liFinished" style="display:none; list-style: none;"><?= /* @noEscape */ __("Batch processing finished."); ?></li></ul><?php if (empty($allProducts)) { ?> <li style="list-style: none; padding: 1.5rem"><img id="status-image-no-data" style="max-width: 5%" src="<?= /* @noEscape */ $noData ?>" alt=""><span style="font-size: 1.6rem"><?= /* @noEscape */ _('No batches found for processing'); ?></span></li> <?php } ?> <input id="total-batches" type="hidden" value="<?= /* @noEscape */ $totalBatches;?>"/></div></div></div></div></div></div><script>
+    require([
+            'jquery',
+            'jquery/ui',
+            'accordion',
+            'lineProgressbar'
+        ],
+        function ($) {
+
+            
+            let currentBatch = 1;
+            let totalBatches = parseInt($('#total-batches').val());
+            let batches = [];
+
+            if (totalBatches > 0) {
+                let progressBarSelector = $("#connectbase-progress-bar");
+                progressBarSelector.LineProgressbar({
+                    percentage: 0,
+                    fillBackgroundColor: '#77a21b',
+                    height: '25px',
+                    progressBarWidth: 0
+                });
+                batches = <?= /* @noEscape */ json_encode($batch2); ?>;
+                processRequest(currentBatch, totalBatches);
+            }
+
+            function processRequest(currentBatch, totalBatches) {
+                if (batches.length > 0) {
+                    let batchElement = $('#' + batches[0]);
+                    let progressBarSelector = $("#connectbase-progress-bar");
+                    let productIds = $(batchElement).data('product-ids');
+                    let batchIndex = $(batchElement).data('batch-index');
+                    let batchType = $(batchElement).data('batch-type');
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= /* @noEscape */$block->getAjaxUrl();?>",
+                        data: {
+                            type: batchType,
+                            product_ids: productIds,
+                            marketplace_id: "<?= /* @noEscape */$block->getCurrentMarketplaceId(); ?>",
+                            form_key: window.FORM_KEY
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            $("#status-message-" + batchIndex).text(response.message)
+                            if (response.success && response.success === true) {
+                                $("#status-image-" + batchIndex).attr('src', '<?=  /* @noEscape */ $successImg ?>');
+                            } else if (response.success && response.success === false) {
+                                $("#status-image-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                            } else {
+                                $("#status-image-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                            }
+                        },
+                        error: function () {
+                            $("#status-message-" + batchIndex).text('Something went wrong')
+                            $("#status-image-" + batchIndex).attr('src', '<?=  /* @noEscape */ $errorImg ?>');
+                        },
+                        complete: function () {
+                            progressBarSelector.LineProgressbar({
+                                percentage: parseInt((currentBatch / totalBatches) * 100),
+                                fillBackgroundColor: '#77a21b',
+                                height: '35px',
+                                progressBarWidth: parseInt((currentBatch / totalBatches) * 100)
+                            });
+                            currentBatch = currentBatch + 1;
+                            batches.splice($.inArray(batches[0], batches), 1);
+                            processRequest(currentBatch, totalBatches);
+                        }
+                    });
+                }
+            }
+
+        }
+    );</script><style> #batches { border: 1px solid #ddd; border-radius: 0; } .batches-content { padding: 0.5rem 0.5rem; } #batches ul { list-style: none; padding: 0; margin: 0; } #batches ul li { vertical-align: middle; padding: 2px 2px 2px 2px; font: normal 12px sans-serif; font-size: 1.5rem; } #batches li img { vertical-align: middle; margin-right: 5px; max-width: 1.5rem; } #batches span { vertical-align: middle; }</style>

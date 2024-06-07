@@ -1,0 +1,14 @@
+<div class="activity-main"><div class="activity-header"><a href="<?= /* @noEscape */ $block->getRecentActivityUrl();?>"><span class="all-activity-btn"><?= /* @noEscape */ __('View All'); ?></span></a> <h3><strong>Activity</strong></h3></div><div class="activity-label"><h2>Completed Activities</h2></div><div class="activities" data-bind="scope: 'activities'"><div data-bind="foreach: staticsData"><div class="activity-row"><div class="activity-col"><img class="activities-image" src="<?= /* @noEscape */ $block->getViewFileUrl('Ced_ConnectBase::images/circle_dot.svg') ?>" alt=""></div><div class="activity-col"><div class="activity-col-title"><span data-bind="text: message"></span></div><div class="activity-col-subtitle"><span data-bind="text: created_at"></span></div></div></div></div><!-- ko if: isEmptyActivity --><div class="activity-row"><span>No activity found!</span></div><!-- /ko --></div></div><style> .activity-header { padding-top: 2rem; padding-left: 1rem; } .activity-label { padding-left: 1rem; } .activities-image { vertical-align: middle; max-width: 1.5rem; float: inline-start; display: inline-flex; } .activity-row { display: inline-block; width: 100%; padding: 1rem; border-top: 0.1rem solid #dddddd; } .activity-col-title { padding-left: 2rem; } .activity-col-subtitle { padding-left: 2rem; } .all-activity-btn { float: right; padding-right: 1.5rem; font-size: medium; } .all-activity-btn:hover { text-decoration: underline; }</style><script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "activities": {
+                        "component": "Ced_ConnectBase/js/dashboard/activities",
+                        "url": "<?= /* @noEscape */ $block->getActivitiesUrl() ?>",
+                        "marketplace_id": "<?= /* @noEscape */ $block->getCurrentMarketplaceId() ?>"
+                    }
+                }
+            }
+        }
+    }</script>

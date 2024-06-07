@@ -1,0 +1,72 @@
+<!-- ko ifnot: $col.isErrorColumn($row(), $col) -->
+<div
+        class="data-grid-cell-content"
+        data-bind="attr: { class: $col.getMarketplaceProductStatusColor($col, $row())}"
+        text="$col.getLabel($row())">
+</div>
+<!-- /ko -->
+<!-- ko if: $col.isErrorColumn($row(), $col) -->
+<a href="#"
+   class="data-grid-cell-content"
+   data-bind="attr: { class: $col.getMarketplaceProductStatusColor($col, $row())}, click: showError.bind($data, $row().product_id), data-product-id: $row().product_id"
+   text="$col.getLabel($row())">
+</a>
+
+<div data-bind="attr: {id: 'modal'+ $row().product_id }" style="display:none">
+    <div class="modal-body-content">
+        <table class="data table table-validation-errors" id="ced-validation-errors" style="width:100% ">
+            <tr>
+                <th style="width:15%" scope="col" class="col product-id">Product ID</th>
+                <!-- ko ifnot: $col.index == 'warning_status' -->
+                <th scope="col" class="col errors">Error</th>
+                <!-- /ko -->
+                <!-- ko if: $col.index == 'warning_status' -->
+                <th scope="col" class="col errors">Warning</th>
+                <!-- /ko -->
+            </tr>
+            <tr>
+                <td class="col product-id" data-bind="text: $row().product_id"></td>
+                <!-- ko if: $col.index == 'validation_status' -->
+                <td class="col validation-errors" data-bind="foreach: $row().validation_errors">
+                    <li><span data-bind="html: $data"></span></li>
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $col.index == 'marketplace_status' -->
+                <td class="col validation-errors" data-bind="foreach: $row().marketplace_errors">
+                    <li><span data-bind="html: $data"></span></li>
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $col.index == 'warning_status' -->
+                <td class="col validation-errors" data-bind="foreach: $row().marketplace_warning">
+                    <li><span data-bind="html: $data"></span></li>
+                </td>
+                <!-- /ko -->
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- /ko -->
+
+<style>
+    tr {
+        border-bottom: 1px solid #ddd;
+    }
+    tr:nth-child(even) {
+        background-color: #f5f5f5;
+    }
+    tr:hover {background-color: #D6EEEE;}
+    th {
+        background-color: #000000;
+        color: #ffffff;
+        font-size: 1.3rem;
+        padding: 1rem;
+        border: 0.1rem solid #ffffff;
+    }
+    td {
+        font-size: 1.3rem;
+        padding: 1rem 1rem;
+        text-align: start;
+        border-left: 0.1rem dashed #d6d6d6;
+        border-right: 0.1rem dashed #d6d6d6;
+    }
+</style>

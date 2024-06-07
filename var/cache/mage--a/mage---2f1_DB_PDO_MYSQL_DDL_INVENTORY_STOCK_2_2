@@ -1,0 +1,2 @@
+a:4:{s:4:"hash";s:0:"";s:5:"mtime";i:1717763321;s:6:"expire";i:9999999999;s:4:"tags";s:40:"2f1_DB_PDO_MYSQL_DDL,2f1_DB_DDL,2f1_MAGE";}
+"CREATE TABLE `inventory_stock_2` (\n  `sku` varchar(64) NOT NULL COMMENT 'Sku',\n  `quantity` decimal(10,4) NOT NULL DEFAULT 0.0000 COMMENT 'Quantity',\n  `is_salable` tinyint(1) NOT NULL COMMENT 'Is Salable',\n  PRIMARY KEY (`sku`),\n  KEY `index_sku_qty` (`sku`,`quantity`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='Inventory Stock item Table'"

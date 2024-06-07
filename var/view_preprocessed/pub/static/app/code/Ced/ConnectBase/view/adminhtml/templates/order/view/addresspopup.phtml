@@ -1,0 +1,78 @@
+<div id="marketplace-address-modal"><div class="fieldset admin__fieldset-wrapper"><br> <div class="form-inline"><form id="address_edit_form" class="admin__fieldset" method="post" action="<?= /* @noEscape */ $block->getAddressEditAction() ?>" data-mage-init='{"validation": {}}'><div><?= /* @noEscape */ $block->getBlockHtml('formkey') ?> <input type="hidden" id="address_type" name="address_type"></div><div class="admin__field field field-firstname required _required" data-ui-id="sales-order-address-form-container-form-fieldset-element-form-field-firstname"><label class="label admin__field-label" for="name"><span><?= /* @noEscape */ __('Name'); ?></span></label> <div class="admin__field-control control"><input id="name" name="name" value="" class="required-entry maximum-length-255 minimum-length-1 validate-length input-text admin__control-text required-entry _required" type="text"></div></div><div class="admin__field field field-street required _required"><label class="label admin__field-label" for="street"><span><?= /* @noEscape */ __('Street Address'); ?></span></label> <div class="admin__field-control control"><div class="multi-input admin__field-control"><input id="full_address" name="full_address" value="" class="input-text admin__control-text required-entry _required" type="text"></div></div></div><div class="admin__field field field-country_id required _required"><label class="label admin__field-label" for="country_id"><span><?= /* @noEscape */ __('Country'); ?></span></label> <div class="admin__field-control control"><input id="country_name" name="country" class=" input-text admin__control-text" type="hidden"><?= /* @noEscape */ $block->getCountries(); ?></div></div><div class="field field-state admin__field required"><label class="label admin__field-label" for="state"><span><?= /* @noEscape */ __('State/Province'); ?></span></label> <div class="control admin__field-control"><?= /* @noEscape */ $block->getRegion(); ?> <input name="state" id="states" title="<?= /* @noEscape */ __( "State" ); ?>" class=" input-text admin__control-text" type="text"/></div></div><div class="admin__field field field-city required _required"><label class="label admin__field-label" for="city"><span><?= /* @noEscape */ __('City'); ?></span></label> <div class="admin__field-control control"><input id="city" name="city" class="required-entry maximum-length-255 minimum-length-1 validate-length input-text admin__control-text required-entry _required" type="text"></div></div><div class="admin__field field field-postcode"><label class="label admin__field-label" for="postcode"><span><?= /* @noEscape */ __('Zip/Postal Code'); ?></span></label> <div class="admin__field-control control"><input id="postcode" name="zip" value="" class=" input-text admin__control-text" type="text"></div></div><div class="admin__field field field-telephone required _required"><label class="label admin__field-label" for="phone"><span><?= /* @noEscape */ __('Phone Number'); ?></span></label> <div class="admin__field-control control"><input id="phone" name="phone" value="" class="required-entry input-text admin__control-text _required" type="text"></div></div></form></div></div></div><script>
+    require(
+        ['jquery', 'Magento_Ui/js/modal/modal'],
+        function (
+            $, modal
+        ) {
+            var options = {
+                type: 'slide',
+                responsive: true,
+                innerScroll: true,
+                title: 'Address Information',
+                buttons: [{
+                    text: $.mage.__('Close'),
+                    class: '',
+                    click: function () {
+                        this.closeModal();
+                    }
+                },
+                    {
+                        text: $.mage.__('Save'),
+                        class: 'primary',
+                        click: function () {
+                            $('#address_edit_form').submit();
+                        }
+                    }]
+            };
+            var popup = modal(options, $('#marketplace-address-modal'));
+
+            $(".order-addresses").on('click', '.action.order-shipping-address.edit, .action.order-billing-address.edit'
+                , function (e) {
+                    if ($(this).hasClass('order-shipping-address')) {
+                        $('#marketplace-address-modal').find('#address_type').val('shipping');
+                    } else if ($(this).hasClass('order-billing-address')) {
+                        $('#marketplace-address-modal').find('#address_type').val('billing');
+                    } else {
+                        <?php if (isset($orderData['billing_address'])):?>
+                        $('#marketplace-address-modal').find('#address_type').val('billing');
+                        <?php else: ?>
+                        $('#marketplace-address-modal').find('#address_type').val('shipping');
+                        <?php endif; ?> }
+                    var name = $(this).closest('.admin__page-section-item').find('span.recipient-name').text();
+                    var city = $(this).closest('.admin__page-section-item').find('span.recipient-city').text();
+                    var state = $(this).closest('.admin__page-section-item').find('span.recipient-state').text();
+                    var country = $(this).closest('.admin__page-section-item').find('span.recipient-country_code')
+                        .text();
+                    var country_name = $(this).closest('.admin__page-section-item').find('span.recipient-country')
+                        .text();
+                    var zip = $(this).closest('.admin__page-section-item').find('span.recipient-zip').text();
+                    var phone = $(this).closest('.admin__page-section-item').find('span.recipient-phone').text();
+                    var full_address = $(this).closest('.admin__page-section-item').find('span.recipient-full_address')
+                        .text();
+
+                    $('#marketplace-address-modal').find('#name').val(name);
+                    $('#marketplace-address-modal').find('#city').val(city);
+                    $('#marketplace-address-modal').find('#state').val(state);
+                    $('#marketplace-address-modal').find('#states').val(state);
+                    $('#marketplace-address-modal').find('#country').val(country);
+                    $('#marketplace-address-modal').find('#country_name').val(country_name);
+                    $('#marketplace-address-modal').find('#postcode').val(zip);
+                    $('#marketplace-address-modal').find('#phone').val(phone);
+                    $('#marketplace-address-modal').find('#full_address').val(full_address);
+
+
+                    $('#marketplace-address-modal').find('#state').addClass('admin__control-select');
+                    $('#marketplace-address-modal').find('#country').addClass('admin__control-select');
+                    $('#marketplace-address-modal').modal('openModal');
+
+                });
+            $("#state").on('change', function () {
+                var selectedState = $("#state option:selected").text();
+                $('#states').val(selectedState);
+            });
+            $("#country").on('change', function () {
+                var selectedCountry = $("#country option:selected").text();
+                $('#country_name').val(selectedCountry);
+            });
+        }
+    );</script>

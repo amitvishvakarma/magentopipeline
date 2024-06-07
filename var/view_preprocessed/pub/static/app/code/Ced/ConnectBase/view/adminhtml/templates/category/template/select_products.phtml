@@ -1,0 +1,17 @@
+<?php /** @var $block \Ced\ConnectBase\Block\Adminhtml\Category\Template\SelectProducts */ ?> <?php if ($block->visibleApplyQueryButton()) { ?> <div class="selected-products" data-bind="scope: 'selected_products'"><button id="btn-apply-query" class="ced-apply-query-condition action-basic" type="button"><span class="apply-query" data-bind="i18n: 'Apply Query'">Apply Query</span></button> <input type="hidden" id="excluded-product-ids" name="excluded_product_ids" value="" data-excluded-product-ids='<?= $block->escapeHtml($block->getExcludedProducts())?>' data-form-part="template_form"></div><?php } ?> <script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "selected_products": {
+                        "component": "Ced_ConnectBase/js/category/template/select_products",
+                        "multiselectName": "<?= /* @noEscape */ $block->getMultiSelectName() ?>",
+                        "url": "<?= $block->escapeHtml($block->productsAjaxUrl())?>",
+                        "renderUrl": "<?= $block->escapeHtml($block->getRenderUrl())?>",
+                        "providerName": "<?= $block->escapeHtml($block->getProviderName()) ?>",
+                        "templateId": "<?= $block->escapeHtml($block->getTemplateId()) ?>"
+                    }
+                }
+            }
+        }
+    }</script>

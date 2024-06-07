@@ -1,0 +1,2 @@
+a:4:{s:4:"hash";s:0:"";s:5:"mtime";i:1717763321;s:6:"expire";i:9999999999;s:4:"tags";s:40:"2f1_DB_PDO_MYSQL_DDL,2f1_DB_DDL,2f1_MAGE";}
+"CREATE TABLE `ced_onboarding_data` (\n  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',\n  `account_id` tinyint(3) unsigned NOT NULL COMMENT 'Account ID',\n  `call_name` varchar(50) NOT NULL COMMENT 'Call Name',\n  `data` mediumblob NOT NULL COMMENT 'Onboarding Data',\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='Onboarding Data'"

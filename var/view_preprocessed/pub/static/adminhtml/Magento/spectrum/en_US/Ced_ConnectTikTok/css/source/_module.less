@@ -1,0 +1,19 @@
+@tiktok-icons-admin__font-name-path: '@{baseDir}Ced_ConnectTikTok/fonts/tiktok';
+@tiktok-icons-admin__font-name: 'CedTikTok';
+.lib-font-face(
+    @family-name: @tiktok-icons-admin__font-name,
+    @font-path: @tiktok-icons-admin__font-name-path,
+    @font-weight: normal,
+    @font-style: normal
+);
+.admin__menu .item-tiktok.parent.level-0 > a:before {
+    font-family: @tiktok-icons-admin__font-name;
+    content: '\e900';
+    display: block;
+    font-family: 'CedTikTok';
+}
+.admin__menu .item-tiktokwizard.level-0 > a:before {
+    content: '\e900';
+    display: block;
+    font-family: 'CedTikTok';
+}

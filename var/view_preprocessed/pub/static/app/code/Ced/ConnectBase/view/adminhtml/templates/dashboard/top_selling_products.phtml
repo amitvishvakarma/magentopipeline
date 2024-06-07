@@ -1,0 +1,13 @@
+<div class="top-selling-products-main"><div class="top-selling-products-header"><h2><strong>Top Selling Products</strong></h2></div><div class="top-selling-products" data-bind="scope: 'top_selling_products'"><div class="top-selling-products-table-row"><div class="top-selling-products-table-header">Product Name</div><div class="top-selling-products-table-header">Product SKU</div><div class="top-selling-products-table-header">Qty Ordered</div><div class="top-selling-products-table-header">Product Price</div></div><!-- ko foreach: topSellingProducts --><div class="top-selling-products-table-row"><div class="top-selling-products-table-col name"><span data-bind="text: name"></span></div><div class="top-selling-products-table-col sku"><span data-bind="text: sku"></span></div><div class="top-selling-products-table-col qty_ordered"><span data-bind="text: qty_ordered"></span></div><div class="top-selling-products-table-col price"><span data-bind="text: price"></span></div></div><!-- /ko --><!-- ko if: isEmptyTSP --><div class="top-selling-products-table-row"><div class="top-selling-products-table-cell">No Record Available!</div></div><!-- /ko --></div></div><style> .top-selling-products-header { padding-left: 2rem; padding-top: 2rem; } .top-selling-products-main { display: table; width: 100%; border-spacing: 5px; } .top-selling-products { padding-left: 2rem; padding-right: 2rem; background-color: #FFFFFF; display: table; width: 100%; } table { border-collapse: collapse; width: 100%; } .top-selling-products-table-header { padding: 1rem; display: table-cell; font-size: medium; font-weight: 600; } .top-selling-products-table-cell { border-top: 1px solid #DDDDDD;; padding: 8px; text-align: center !important; display: table-cell; } .top-selling-products-table-row { display: table-row; border-top: 1px solid #DDDDDD; } .top-selling-products-table-col { display: table-cell; padding-left: 1rem; padding-bottom: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #DDDDDD; } tr:hover {background-color: #FFFFFF;}</style><script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "top_selling_products": {
+                        "component": "Ced_ConnectBase/js/dashboard/top-selling-products",
+                        "url": "<?= /* @noEscape */ $block->getTopSellingProductsUrl() ?>"
+                    }
+                }
+            }
+        }
+    }</script>
